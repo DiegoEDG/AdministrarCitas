@@ -1,4 +1,5 @@
 import { datosCita, nuevaCita } from '../funciones.js';
+import { crearDB } from '../indexedDB.js';
 import {
 	formulario,
 	mascotaInput,
@@ -23,6 +24,9 @@ class App {
 		sintomasInput.addEventListener('input', datosCita);
 
 		formulario.addEventListener('submit', nuevaCita);
+
+		//creación de la DB
+		crearDB();
 	}
 }
 

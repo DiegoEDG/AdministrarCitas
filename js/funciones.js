@@ -1,5 +1,6 @@
 import Citas from './classes/Citas.js';
 import UI from './classes/UI.js';
+import { DB } from './indexedDB.js';
 import {
 	formulario,
 	mascotaInput,
@@ -11,7 +12,7 @@ import {
 } from './selectores.js';
 
 //Instancias de las clases
-const ui = new UI();
+export const ui = new UI();
 const citas = new Citas();
 
 let editando;
@@ -58,7 +59,19 @@ export function nuevaCita(e) {
 		//Creando una nueva cita
 		citas.registrarCitas({ ...citaObj });
 
-		ui.imprimirAlerta('La cita se agregó correctamente!');
+		//crear la transacción
+		const transaction = DB.transaction(['citas'], 'readwrite');
+
+		//habilitar el object store
+		const objetStore = transaction.objectStore('citas');
+
+		//agregar el registro a la DB
+		objetStore.add(citaObj);
+
+		//si la transacción se completo
+		transaction.oncomplete = function () {
+			ui.imprimirAlerta('La cita se agregó correctamente!');
+		};
 	}
 	//reiniciar form
 	formulario.reset();
@@ -66,7 +79,7 @@ export function nuevaCita(e) {
 	//reiniciar objeto
 	reiniciarObjeto();
 
-	ui.mostrarCitas(citas);
+	ui.mostrarCitas();
 }
 
 export function reiniciarObjeto() {
@@ -84,7 +97,7 @@ export function eliminarCita(id) {
 	//mostrar el mensaje
 	ui.imprimirAlerta('Se eliminó la cita correctamente');
 	//Refrescar citas en el HTML
-	ui.mostrarCitas(citas);
+	ui.mostrarCitas();
 }
 
 export function cargarEdicion(cita) {

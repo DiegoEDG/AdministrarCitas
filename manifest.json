@@ -1,0 +1,9 @@
+{
+  "name":"administrador de citas",
+  "short_name":"AC",
+  "start_url":"/index.html",
+  "display":"standalone",
+  "background_color":"#D41872",
+  "theme_color": "#D41872",
+  "orientation":"portrait"
+}

@@ -99,12 +99,22 @@ export function reiniciarObjeto() {
 }
 
 export function eliminarCita(id) {
-	//eliminar la cita del objeto
-	citas.removerCita(id);
-	//mostrar el mensaje
-	ui.imprimirAlerta('Se eliminó la cita correctamente');
-	//Refrescar citas en el HTML
-	ui.mostrarCitas();
+	const transaction = DB.transaction(['citas'], 'readwrite');
+	const objectStore = transaction.objectStore('citas');
+
+	objectStore.delete(id);
+
+	transaction.oncomplete = () => {
+		//mostrar el mensaje
+		ui.imprimirAlerta('Se eliminó la cita correctamente');
+
+		//Refrescar citas en el HTML
+		ui.mostrarCitas();
+	};
+
+	transaction.onerror = () => {
+		console.log('hubo un error');
+	};
 }
 
 export function cargarEdicion(cita) {
